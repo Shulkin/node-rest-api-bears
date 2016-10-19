@@ -39,9 +39,9 @@ router.get("/", function(req, res) {
 });
 // on routes that end in /bears
 // i.e. we use router.route to handle multiple routes for the same URI
-router.route("/bears").
+router.route("/bears")
   // create a bear (accessed at POST http://localhost:3000/api/bears)
-  post(function(req, res) {
+  .post(function(req, res) {
     var bear = new Bear(); // new Bear model instance
     bear.name = req.body.name; // set the bears name (comes from the request)
     // save the bear to database
@@ -50,6 +50,14 @@ router.route("/bears").
       if (err) res.send(err);
       // everything is OK!
       res.json({message: "Bear is created!"});
+    });
+  })
+  // get all the bears (accessed at GET http://localhost:3000/api/bears)
+  .get(function(req, res) {
+    Bear.find(function(err, bears) {
+      if (err) res.send(err);
+      // return all found bears
+      res.json(bears);
     });
   });
 
