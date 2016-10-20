@@ -49,7 +49,7 @@ router.route("/bears")
       // check for error
       if (err) res.send(err);
       // everything is OK!
-      res.json({message: "Bear is created!"});
+      res.json({message: "Bear created!"});
     });
   })
   // get all the bears (accessed at GET http://localhost:3000/api/bears)
@@ -58,6 +58,38 @@ router.route("/bears")
       if (err) res.send(err);
       // return all found bears
       res.json(bears);
+    });
+  });
+
+// on routes that end in /bears/:bear_id
+router.route("/bears/:bear_id")
+  // get the bear with that id (accessed at GET http://localhost:3000/api/bears/:bear_id)
+  .get(function(req, res) {
+    Bear.findById(req.params.bear_id, function(err, bear) {
+      if (err) res.send(err);
+      // return found bear
+      res.json(bear);
+    });
+  })
+  // update the bear with this id (accessed at PUT http://localhost:3000/api/bears/:bear_id)
+  .put(function(req, res) {
+    Bear.findById(req.params.bear_id, function(err, bear) {
+      if (err) res.send(err);
+      // update bears name from PUT body params
+      bear.name = req.body.name;
+      // save the bear
+      bear.save(function(err) {
+        if (err) res.send(err);
+        res.json({message: "Bear updated"});
+      });
+    });
+  })
+  .delete(function(req, res) {
+    Bear.remove({
+      _id: req.params.bear_id
+    }, function(err, bear) {
+      if (err) res.send(err);
+      res.json({message: "Successfully deleted"});
     });
   });
 
